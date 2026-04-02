@@ -707,6 +707,7 @@ async function sendEmail() {
 
   const templateParams = {
     to_email:        EMPFAENGER_EMAIL,
+    name:            answers.ansprechpartner || answers.firma || '–',
     firma:           answers.firma           || '–',
     ansprechpartner: answers.ansprechpartner || '–',
     email:           answers.email           || '–',
@@ -1042,6 +1043,16 @@ function render() {
     <div class="section-badge">${step + 1} / ${STEPS.length} · ${s.label}</div>
     <div class="section-title">${s.title}</div>`;
 
+  // Intro box on first step (Kontakt)
+  if (s.id === 'contact') {
+    html += `<div class="scenario-box" style="border-left:3px solid #1B4A8A;background:#F0F4FB">
+      <strong>Wir validieren gerade eine neue Geschäftsidee</strong> – eine Plattform, die handwerklichen Betrieben viel Arbeit bei der Auftragsgewinnung sparen kann.<br><br>
+      Unser Ziel: Ihre <strong>Zwischenzeiten sauberer auszufüllen</strong>, kleinere Aufträge mit minimalem Aufwand zu vermitteln und Ihre <strong>Auftragsbücher zu füllen</strong> – ohne dass Sie selbst suchen oder Angebote schreiben müssen.<br><br>
+      <strong>Ihre Antworten helfen uns, den Service genau auf Ihre Bedürfnisse zuzuschneiden.</strong><br>
+      Dauer: ca. <strong>7–10 Minuten</strong>
+    </div>`;
+  }
+
   if (s.scenario) {
     html += `<div class="scenario-box">
       Ein Kunde gibt Ihnen alle notwendigen Informationen (Beschreibung, Fotos usw.), sodass <strong>keine Rückfragen notwendig sind</strong>.
@@ -1059,17 +1070,17 @@ function render() {
   });
 
   html += `<div class="nav-row">`;
-  if (step > 0) html += `<button class="btn" tabindex="${tabIdx++}" onclick="step--;render()">Zurück</button>`;
+  if (step > 0) html += `<button class="btn" tabindex="${tabIdx++}" onclick="step--;render();window.scrollTo({top:0,behavior:'smooth'})">Zurück</button>`;
   if (step < STEPS.length - 1) {
     const isContactStep = s.id === 'contact';
     const emailOk = isValidEmail(answers.email);
     const blocked = isContactStep && !emailOk;
     html += `<button id="weiter-btn" class="btn btn-primary" tabindex="${tabIdx++}"
-      onclick="if(${blocked}){return;}step++;render();"
+      onclick="if(${blocked}){return;}step++;render();window.scrollTo({top:0,behavior:'smooth'});"
       style="${blocked ? 'opacity:0.4;cursor:not-allowed' : ''}">Weiter</button>`;
     if (isContactStep) html += `<span id="weiter-hint" style="align-self:center;font-size:13px;color:#9A4444;margin-left:4px;${emailOk ? 'display:none' : ''}">Bitte gültige E-Mail eintragen</span>`;
   } else {
-    html += `<button class="btn btn-primary" tabindex="${tabIdx++}" onclick="phase='confirm';render()">Fragebogen absenden →</button>`;
+    html += `<button class="btn btn-primary" tabindex="${tabIdx++}" onclick="phase='confirm';render();window.scrollTo({top:0,behavior:'smooth'})">Weiter</button>`;
   }
   html += `</div></div>`;
   app.innerHTML = html;
